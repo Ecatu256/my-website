@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Contact System</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Contact System</h2>
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-link active" data-section="overview">
+          <span class="icon">📊</span> Overview
+        </a>
+        <a href="#" class="nav-link" data-section="messages">
+          <span class="icon">📧</span> Messages <span class="badge" id="unreadBadge">0</span>
+        </a>
+        <a href="#" class="nav-link" data-section="analytics">
+          <span class="icon">📈</span> Analytics
+        </a>
+        <a href="#" class="nav-link" data-section="settings">
+          <span class="icon">⚙️</span> Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-name" id="userName">Admin</div>
+          <div class="user-email" id="userEmail">admin@example.com</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <h1 id="pageTitle">Overview</h1>
+        <div class="header-actions">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search messages...">
+          <button class="btn-export" id="exportBtn">📥 Export CSV</button>
+        </div>
+      </header>
+
+      <!-- Overview Section -->
+      <section id="overview" class="section active">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #667eea;">📊</div>
+            <div class="stat-content">
+              <div class="stat-label">Total Messages</div>
+              <div class="stat-value" id="statTotal">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #f56565;">🔴</div>
+            <div class="stat-content">
+              <div class="stat-label">Unread</div>
+              <div class="stat-value" id="statUnread">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #48bb78;">✅</div>
+            <div class="stat-content">
+              <div class="stat-label">Replied</div>
+              <div class="stat-value" id="statReplied">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #ed8936;">📦</div>
+            <div class="stat-content">
+              <div class="stat-label">Archived</div>
+              <div class="stat-value" id="statArchived">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Activity Chart -->
+        <div class="chart-container">
+          <h3>Daily Submissions (Last 30 Days)</h3>
+          <canvas id="dailyChart"></canvas>
+        </div>
+
+        <!-- Top Domains -->
+        <div class="chart-container">
+          <h3>Top Contact Domains</h3>
+          <div id="topDomains" class="domains-list"></div>
+        </div>
+      </section>
+
+      <!-- Messages Section -->
+      <section id="messages" class="section">
+        <!-- Filters -->
+        <div class="filters">
+          <select id="statusFilter" class="filter-select">
+            <option value="">All Statuses</option>
+            <option value="unread">Unread</option>
+            <option value="read">Read</option>
+            <option value="replied">Replied</option>
+            <option value="archived">Archived</option>
+          </select>
+          <input type="text" id="filterSearch" class="filter-input" placeholder="Search by name, email, or subject...">
+        </div>
+
+        <!-- Messages List -->
+        <div class="messages-list" id="messagesList"></div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination"></div>
+
+        <!-- Message Detail Modal -->
+        <div class="modal" id="messageModal">
+          <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+
+            <div class="modal-header">
+              <h2 id="modalTitle">Message Details</h2>
+              <span class="status-badge" id="modalStatus"></span>
+            </div>
+
+            <div class="modal-body">
+              <div class="message-detail">
+                <div class="detail-row">
+                  <span class="label">From:</span>
+                  <span class="value" id="modalName"></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Email:</span>
+                  <span class="value" id="modalEmail"></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Subject:</span>
+                  <span class="value" id="modalSubject"></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Date:</span>
+                  <span class="value" id="modalDate"></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Message:</span>
+                  <div class="value message-text" id="modalMessage"></div>
+                </div>
+              </div>
+
+              <div class="modal-actions">
+                <select id="statusSelect" class="status-select">
+                  <option value="">Change Status</option>
+                  <option value="unread">Mark Unread</option>
+                  <option value="read">Mark Read</option>
+                  <option value="replied">Mark Replied</option>
+                  <option value="archived">Archive</option>
+                </select>
+                <button class="btn-delete" id="deleteBtn">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics Section -->
+      <section id="analytics" class="section">
+        <div class="analytics-grid">
+          <div class="chart-container">
+            <h3>Weekly Submissions</h3>
+            <canvas id="weeklyChart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Monthly Submissions</h3>
+            <canvas id="monthlyChart"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Messages by Status</h3>
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings" class="section">
+        <div class="settings-container">
+          <h3>Settings</h3>
+          <div class="setting-item">
+            <label>API Endpoint</label>
+            <input type="text" id="apiEndpoint" class="setting-input" readonly>
+          </div>
+          <div class="setting-item">
+            <label>Session Token</label>
+            <input type="password" id="sessionToken" class="setting-input" readonly>
+            <button class="btn-copy" id="copyToken">Copy</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Alert Messages -->
+  <div class="alert alert-success" id="successAlert" style="display: none;"></div>
+  <div class="alert alert-error" id="alertError" style="display: none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
